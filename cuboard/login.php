@@ -5,7 +5,7 @@
 </head>
 
 <?php
-require 'include\checkmlogin.php';
+require("include/checkmlogin.php");
 ?>
 <body>
     <?php error_reporting(E_ALL ^  E_NOTICE);
@@ -38,13 +38,7 @@ require 'include\checkmlogin.php';
 
 			session_start(); 
 
-			$con=mysqli_connect("localhost","cubox","qubox","cuboard");
-			// Check connection
-			if (mysqli_connect_errno($con))
-			{
-    			echo "Failed to connect to MySQL: " . mysqli_connect_error();
-			}
-			mysqli_select_db($con,"cuboard"); 
+			require("include/mysqlcon.php");
 
 			$username = $_POST["username"]; 
 			$password = md5($_POST["password"]); 

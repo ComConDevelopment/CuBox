@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.9
+-- version 4.1.12
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 17. Apr 2014 um 16:46
--- Server Version: 5.6.14
--- PHP-Version: 5.5.6
+-- Erstellungszeit: 14. Jul 2014 um 16:40
+-- Server Version: 5.6.16
+-- PHP-Version: 5.5.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -27,20 +27,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `control` (
-  `cid` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `cid` int(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `status` tinyint(1) DEFAULT '0',
   `code` int(6) unsigned NOT NULL,
+  `room` char(50) DEFAULT NULL,
+  `pos` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
-
---
--- Daten für Tabelle `control`
---
-
-INSERT INTO `control` (`cid`, `name`, `status`, `code`) VALUES
-(9, 'Badlicht', 0, 100012),
-(10, 'Wohnzimmerlampe', 0, 100104);
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
 
 -- --------------------------------------------------------
 
@@ -53,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `login` (
   `username` varchar(50) NOT NULL,
   `password` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Daten für Tabelle `login`

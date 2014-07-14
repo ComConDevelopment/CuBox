@@ -37,8 +37,10 @@ function updatebutton(id,value,code){
 
 
 <?php
-require 'include\checkmobile.php';
-include 'include\nosession.php';
+require("include/checkmobile.php");
+include("include/nosession.php");
+//include 'include\weather.php';
+
 ?>
 
 
@@ -59,25 +61,19 @@ include 'include\nosession.php';
 	<h3>Schalterart</h3>
 	<div style="position: relative; width: 0px; height: 0px;">
 		<div class="temp">
-		<p>0,0&deg;C</p>
+		<p>0&deg;C</p>
 	</div>
 	</div>
 
 	<?php
-	//MySQL Connect----------------------------------------------
-							$con=mysqli_connect("localhost","cubox","qubox","cuboard");
-							// Check connection
-							if (mysqli_connect_errno($con))
-  							{
-  							echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  							}
-							mysqli_select_db($con,"cuboard");
+
+	require("include/mysqlcon.php");
 
 	//Button---------------------------
 
   						echo "<form action='$_SERVER[PHP_SELF]' method=POST >";						
 							echo "<table>";							
-  							$query = "SELECT * FROM control";
+  							$query = "SELECT * FROM control ORDER BY pos";
    							$result = mysqli_query($con,$query);
 
    							while ($row = mysqli_fetch_object($result))
@@ -86,7 +82,7 @@ include 'include\nosession.php';
 								echo "<td>$row->name</td>";
 								if ($row->status ==1)
 								{	
-									echo "<td><Button onclick=updatebutton('$row->cid','$row->status','$row->code') >an</Button></td>";
+									echo "<td><Button class=an onclick=updatebutton('$row->cid','$row->status','$row->code') >an</Button></td>";
 								}
  								else
  								{

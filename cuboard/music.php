@@ -6,7 +6,7 @@
 </head>
 
 <?php
-include 'include\nosession.php';
+include("include/nosession.php");
 ?>
 
 

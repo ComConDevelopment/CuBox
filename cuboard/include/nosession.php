@@ -1,7 +1,6 @@
 <?php 
 session_start(); 
 
-require 'include\checkmlogin.php';
 
 if(!isset($_SESSION["username"])) 
    { 

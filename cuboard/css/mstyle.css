@@ -100,9 +100,11 @@
     button:hover {
       background: #DCFCF3;
     }
-
     button.loeschen:hover {
       background: #FFA4A4;
+    }
+    button.an {
+      background: #DCFCF3;
     }
 
     .logout {

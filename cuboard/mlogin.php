@@ -33,13 +33,7 @@
 
 			session_start(); 
 
-			$con=mysqli_connect("localhost","cubox","qubox","cuboard");
-			// Check connection
-			if (mysqli_connect_errno($con))
-			{
-    			echo "Failed to connect to MySQL: " . mysqli_connect_error();
-			}
-			mysqli_select_db($con,"cuboard"); 
+			require("include/mysqlcon.php");
 
 			$username = $_POST["username"]; 
 			$password = md5($_POST["password"]); 
@@ -63,7 +57,7 @@
 			elseif ($row->password == $password) 
     		{ 
     			$_SESSION["username"] = $username; 
-    			header("LOCATION: mcontrol.php");
+    			header("LOCATION: mcontrol.php");                
     		} 
 
 			else 

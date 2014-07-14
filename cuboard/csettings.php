@@ -3,6 +3,8 @@
 
 <head>
 <link href="css/style.css" rel="stylesheet">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.js"></script>
 <script language="javascript" type="text/javascript">
 
 function deletebutton(id,name){
@@ -22,7 +24,6 @@ function deletebutton(id,name){
   				if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		    	{			
 	    			var id = document.getElementById('id');
-            var name = document.getElementById('name');
     			}
   			}
 
@@ -36,13 +37,39 @@ function deletebutton(id,name){
         }
 		}
 
+$(document).ready(function()
+    {
+      function slideout() {
+        setTimeout(function() {
+          $("#debugMess").slideUp("slow", function () {
+      });
+    }, 2000);}
+ 
+    $("#debugMess").hide();
+ 
+    $(function() {
+        $("#customersList").sortable({ placeholder: "customersListHighlight", opacity: 1, cursor: 'move', update: function() {
+          var order = $(this).sortable("serialize") + '&action=updateCustomerPos';
+          $.post("updatepos.php", order, function(theResponse) {
+            $("#debugMess").html(theResponse);
+            $("#debugMess").slideDown('slow');
+            slideout();
+          });                                
+        }                 
+      });
+      $( "#customersList" ).disableSelection();
+    });
+  }); 
+
+
+
     </script>
 
 </head>
 
 
 <?php
-include 'include\nosession.php';
+include("include/nosession.php");
 ?>
 
 
@@ -59,14 +86,8 @@ include 'include\nosession.php';
 	
 
 	<?php
-	//MySQL Connect----------------------------------------------
-							$con=mysqli_connect("localhost","cubox","qubox","cuboard");
-							// Check connection
-							if (mysqli_connect_errno($con))
-  							{
-  							echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  							}
-							mysqli_select_db($con,"cuboard");
+
+  require("include/mysqlcon.php");
 
 	//Buttons----------------------------------------------------
               if ($_SERVER['REQUEST_METHOD'] != "POST")
@@ -77,30 +98,43 @@ include 'include\nosession.php';
               echo "<h3>Neuer Eintrag</h3>";
               echo "<div style=position:absolute;><div class=logout><input type=submit name='logout' value='Logout' ></div></div>";                        
               echo "<table>";
-
+                echo "<colgroup width=150></colgroup>";
                 echo "<tr>";
                 echo "<td>
                       <input type=text name='bezeichnung' placeholder='Bezeichnung'>
                       </td>";
                 echo "<td>
-                      <input type=text name='code' placeholder='Code z.B. 100102'>
-                      </td>";                      
+                      <input type=text style=width:110px; name='code' placeholder='Code z.B. 100102'>
+                      </td>";     
+                echo "<td>
+                      <input type=text style=width:100px ; name='room' placeholder='Raum'>
+                      </td>";                    
                 echo "<td style=padding-top:35px;>
                       <input style=margin-top:-30px; type=submit name='eintragen' value='Eintragen' >
                       </td>";
+                echo "</table>";
 
-                $result = mysqli_query($con,"SELECT * FROM control");
+                echo "<ul id=customersList>";
+
+
+                $result = mysqli_query($con,"SELECT * FROM control ORDER BY pos");
 
                 while ($row = mysqli_fetch_object($result))
                 {
+                echo "<li id=recArray_$row->cid>";
+                echo "<table id=test>";
+                echo "<colgroup width=150></colgroup>";
                 echo "<tr>";
                 echo "<td>$row->name</td>";
                 echo "<td>$row->code</td>";
-                echo "<td><Button class=loeschen onclick=deletebutton('$row->cid','$row->name') >L&ouml;schen</Button></td>";            
-                echo "</tr>";                
+                echo "<td>$row->room</td>";
+                echo "<td><Button class=loeschen onclick=deletebutton('$row->cid') >L&ouml;schen</Button></td>";    
+                echo "</tr>";        
+                echo "</table>";
+                echo "</li>";                
                 }    
 
-              echo "</table>";
+              echo "</ul>";
               echo "</form>";
 							echo "</div>";
               mysqli_free_result($result);
@@ -112,6 +146,7 @@ include 'include\nosession.php';
               
                 $bezeichnung=$_POST["bezeichnung"];
                 $code=$_POST["code"];
+                $room=$_POST["room"];
 
                 $codelen=strlen($code);
 
@@ -153,7 +188,7 @@ include 'include\nosession.php';
                 else
                 {
 
-                $eintrag = "INSERT INTO control (name, code) VALUES ('$bezeichnung', '$code')"; 
+                $eintrag = "INSERT INTO control (name, code, room) VALUES ('$bezeichnung', '$code', '$room')"; 
                 $eintragen = mysqli_query($con, $eintrag); 
 
                 if($eintragen == true) 
