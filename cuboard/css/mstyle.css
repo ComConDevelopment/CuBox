@@ -86,13 +86,13 @@
     button {
       display: block;
       width: 850px;
-      padding:70px;
+      padding:40px;
       color: #999;
       text-decoration: none;
       background: #f0f0f0;
       text-align: center;
       vertical-align: middle;
-      font-size: 60pt;
+      font-size: 50pt;
       border-width: 0;
       margin: 0 auto;
       cursor: pointer;

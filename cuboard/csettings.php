@@ -50,7 +50,7 @@ $(document).ready(function()
     $(function() {
         $("#customersList").sortable({ placeholder: "customersListHighlight", opacity: 1, cursor: 'move', update: function() {
           var order = $(this).sortable("serialize") + '&action=updateCustomerPos';
-          $.post("updatepos.php", order, function(theResponse) {
+          $.post("posupdate.php", order, function(theResponse) {
             $("#debugMess").html(theResponse);
             $("#debugMess").slideDown('slow');
             slideout();
@@ -89,59 +89,99 @@ include("include/nosession.php");
 
   require("include/mysqlcon.php");
 
-	//Buttons----------------------------------------------------
               if ($_SERVER['REQUEST_METHOD'] != "POST")
               {
+
+              $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
+
               echo "<div class=box>";
-              echo "<form action='$_SERVER[PHP_SELF]' method=POST >"; 
-  						echo "<h2>Control Settings</h2>";
-              echo "<h3>Neuer Eintrag</h3>";
-              echo "<div style=position:absolute;><div class=logout><input type=submit name='logout' value='Logout' ></div></div>";                        
+              echo "<form action='$_SERVER[PHP_SELF]' method=POST >";
+              echo "<div style=position:absolute;><div class=logout><input type=submit name='logout' value='Logout' ></div></div>";  
+  						echo "<h2>Objekt hinzuf&uuml;gen</h2>";
+              echo "<h3>Neuer Eintrag</h3>";                                     
               echo "<table>";
-                echo "<colgroup width=150></colgroup>";
+                echo "<colgroup width=110></colgroup>";
                 echo "<tr>";
                 echo "<td>
-                      <input type=text name='bezeichnung' placeholder='Bezeichnung'>
+                      <input type=text style=width:140px; name='bezeichnung' placeholder='Bezeichnung'>
                       </td>";
                 echo "<td>
-                      <input type=text style=width:110px; name='code' placeholder='Code z.B. 100102'>
+                      <input type=text style=width:120px; name='code' placeholder='Code z.B. 100102'>
                       </td>";     
                 echo "<td>
-                      <input type=text style=width:100px ; name='room' placeholder='Raum'>
+                      <select style=width:120px; name='room'>";
+                      while ($row = mysqli_fetch_object($resultroom))
+                      {
+                        echo "<option value=$row->rid>$row->room</option>";
+                      }
+                echo "</select>
                       </td>";                    
                 echo "<td style=padding-top:35px;>
-                      <input style=margin-top:-30px; type=submit name='eintragen' value='Eintragen' >
+                      <input style=margin-top:-30px; type=submit name='objeintragen' value='Eintragen'>
                       </td>";
                 echo "</table>";
 
                 echo "<ul id=customersList>";
 
-
-                $result = mysqli_query($con,"SELECT * FROM control ORDER BY pos");
+                $test = "SELECT * FROM control LEFT JOIN room ON control.rid=room.rid ORDER BY control.pos";
+                $result = mysqli_query($con, $test);
 
                 while ($row = mysqli_fetch_object($result))
                 {
                 echo "<li id=recArray_$row->cid>";
-                echo "<table id=test>";
-                echo "<colgroup width=150></colgroup>";
+                echo "<table id=settingstable>";
+                echo "<colgroup width=110></colgroup>";
                 echo "<tr>";
-                echo "<td>$row->name</td>";
-                echo "<td>$row->code</td>";
-                echo "<td>$row->room</td>";
-                echo "<td><Button class=loeschen onclick=deletebutton('$row->cid') >L&ouml;schen</Button></td>";    
+                echo "<td style=width:145px;>$row->name</td>";
+                echo "<td style=width:130px;>$row->code</td>";
+                echo "<td style=width:130px;>$row->room</td>";
+                echo "<td><Button class=loeschen onclick=deletebutton('$row->cid','$row->name') >L&ouml;schen</Button></td>";    
                 echo "</tr>";        
                 echo "</table>";
                 echo "</li>";                
                 }    
 
-              echo "</ul>";
+                echo "</ul>";
+
               echo "</form>";
 							echo "</div>";
-              mysqli_free_result($result);
+
+              mysqli_free_result($resultroom);
+              $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
+
+              echo "<div class=box>";
+              echo "<form action='$_SERVER[PHP_SELF]' method=POST >"; 
+              echo "<h2>Raum hinzuf&uuml;gen</h2>";
+              echo "<h3>Neuer Eintrag</h3>";                               
+              echo "<table>";
+              echo "<colgroup width=110></colgroup>";
+              echo "<tr>";   
+              echo "<td>";
+              echo "<input type=text style=width:420px; name='newroom' placeholder='Raum'>";
+              echo "</td>";                    
+              echo "<td style=padding-top:35px;>";
+              echo "<input style=margin-top:-30px; type=submit name='roomeintragen' value='Eintragen'>";
+              echo "</td>";
+              echo "</table>";
+
+                while ($row = mysqli_fetch_object($resultroom))
+                {
+                  echo "<table>";
+                  echo "<colgroup width=110></colgroup>";
+                  echo "<tr>";
+                  echo "<td>$row->room</td>";
+                  echo "<td><Button class=loeschen onclick=deletebutton('$row->rid') >L&ouml;schen</Button></td>";    
+                  echo "</tr>";        
+                  echo "</table>";
+                }
+
+              echo "</form>";
+              echo "</div>";
+
               }
               else
               {
-							if (isset($_POST['eintragen'])) 
+							if (isset($_POST['objeintragen'])) 
               {
               
                 $bezeichnung=$_POST["bezeichnung"];
@@ -150,7 +190,7 @@ include("include/nosession.php");
 
                 $codelen=strlen($code);
 
-                $codevorhanden = mysqli_query($con,"SELECT code FROM control WHERE code='$code'");
+                $codevorhanden = mysqli_query($con,"SELECT code FROM control WHERE code='$code'");            
 
                 if ($bezeichnung == "") 
                 {
@@ -160,7 +200,7 @@ include("include/nosession.php");
                   echo "</ul>";
                   echo "</div>";
                   echo "<div class=box align=center>";
-                  echo "Es wurde keine Bezeichnung angegeben. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
+                  echo "Es wurde keine <b>Bezeichnung</b> angegeben. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
                   echo "</div>";
                 }                
                 elseif ($codelen != 6) 
@@ -171,7 +211,7 @@ include("include/nosession.php");
                   echo "</ul>";
                   echo "</div>";
                   echo "<div class=box align=center>";
-                  echo "Fehler in der L&auml;nge des Codes. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
+                  echo "Fehler in der L&auml;nge des <b>Codes</b>. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
                   echo "</div>";
                 }
                 elseif (mysqli_num_rows($codevorhanden) == 1) 
@@ -185,10 +225,22 @@ include("include/nosession.php");
                   echo "Der eingegebene Code <b>$code</b> ist bereits vorhanden. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
                   echo "</div>";
                 }
+
+                elseif ($room == "") 
+                {
+                  echo "<div id=navigationbar>";
+                  echo "<ul id=list-nav>";
+                  echo "<li id=navlogin><a>CuBoard</a></li>";
+                  echo "</ul>";
+                  echo "</div>";
+                  echo "<div class=box align=center>";
+                  echo "Bitte f&uuml;gen Sie zuerst einen <b>Raum</b> hinzu. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
+                  echo "</div>";
+                }
                 else
                 {
 
-                $eintrag = "INSERT INTO control (name, code, room) VALUES ('$bezeichnung', '$code', '$room')"; 
+                $eintrag = "INSERT INTO control (name, code, rid) VALUES ('$bezeichnung', '$code', '$room')"; 
                 $eintragen = mysqli_query($con, $eintrag); 
 
                 if($eintragen == true) 
@@ -217,6 +269,64 @@ include("include/nosession.php");
                     } 
                 }
               }
+
+              elseif (isset($_POST['roomeintragen'])) 
+              {
+                $newroom=$_POST["newroom"];
+                $roomvorhanden = mysqli_query($con,"SELECT room FROM room WHERE room='$newroom'"); 
+                if ($newroom == "") 
+                {
+                  echo "<div id=navigationbar>";
+                  echo "<ul id=list-nav>";
+                  echo "<li id=navlogin><a>CuBoard</a></li>";
+                  echo "</ul>";
+                  echo "</div>";
+                  echo "<div class=box align=center>";
+                  echo "Es wurde kein <b>Raum</b> angegeben. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
+                  echo "</div>";
+                }
+                elseif (mysqli_num_rows($roomvorhanden) == 1) 
+                {
+                  echo "<div id=navigationbar>";
+                  echo "<ul id=list-nav>";
+                  echo "<li id=navlogin><a>CuBoard</a></li>";
+                  echo "</ul>";
+                  echo "</div>";
+                  echo "<div class=box align=center>";
+                  echo "Der Raum <b>$newroom</b> ist bereits vorhanden. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
+                  echo "</div>";
+                }
+                else
+                {
+                $eintrag = "INSERT INTO room (room) VALUES ('$newroom')"; 
+                $eintragen = mysqli_query($con, $eintrag); 
+
+                if($eintragen == true) 
+                    { 
+                        echo "<div id=navigationbar>";
+                        echo "<ul id=list-nav>";
+                        echo "<li id=navlogin><a>CuBoard</a></li>";
+                        echo "</ul>";
+                        echo "</div>";
+                        echo "<div class=box align=center>";
+                        echo "<b>$newroom</b> wurde eingetragen. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
+                        echo "</div>";
+                                                  
+                    }
+                else 
+                    { 
+                        echo "<div id=navigationbar>";
+                        echo "<ul id=list-nav>";
+                        echo "<li id=navlogin><a>CuBoard</a></li>";
+                        echo "</ul>";
+                        echo "</div>";
+                        echo "<div class=box align=center>";
+                        echo "Fehler beim Eintragen von <b>$newroom</b>. <br><a href=\"csettings.php\">Zur&uuml;ck</a>";  
+                        echo "</div>";
+                                                
+                    } 
+                }
+              } 
 
               elseif (isset($_POST['logout']))
               {
@@ -256,8 +366,7 @@ include("include/nosession.php");
                 header("LOCATION: csettings.php");
               }
             }
-              
-		          
+            
 							
 							mysqli_close($con);
 

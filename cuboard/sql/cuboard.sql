@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 14. Jul 2014 um 16:40
+-- Erstellungszeit: 16. Jul 2014 um 16:52
 -- Server Version: 5.6.16
 -- PHP-Version: 5.5.11
 
@@ -31,10 +31,10 @@ CREATE TABLE IF NOT EXISTS `control` (
   `name` varchar(50) NOT NULL,
   `status` tinyint(1) DEFAULT '0',
   `code` int(6) unsigned NOT NULL,
-  `room` char(50) DEFAULT NULL,
-  `pos` tinyint(4) DEFAULT NULL,
+  `pos` tinyint(4) unsigned NOT NULL,
+  `rid` int(4) NOT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `login` (
   `username` varchar(50) NOT NULL,
   `password` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Daten für Tabelle `login`
@@ -55,6 +55,19 @@ CREATE TABLE IF NOT EXISTS `login` (
 
 INSERT INTO `login` (`id`, `username`, `password`) VALUES
 (1, 'Jero', '81dc9bdb52d04dc20036dbd8313ed055');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `room`
+--
+
+CREATE TABLE IF NOT EXISTS `room` (
+  `rid` int(4) NOT NULL AUTO_INCREMENT,
+  `room` char(50) NOT NULL,
+  `pos` tinyint(4) unsigned NOT NULL,
+  PRIMARY KEY (`rid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

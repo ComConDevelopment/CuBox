@@ -183,11 +183,11 @@
       font-size: 12pt;
     }
 
-    #customersList{ 
+    #customersList { 
       list-style-type: none;
       cursor: pointer;
     }
-    #test {
+    #settingstable {
       text-align: right;
     }
 

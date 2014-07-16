@@ -55,55 +55,47 @@ include("include/nosession.php");
     </ul>
 </div>
 
-<div class="box">
-
-	<h2>Zimmerbeschreibung</h2>
-	<h3>Schalterart</h3>
-	<div style="position: relative; width: 0px; height: 0px;">
+<div style="position: relative; width: 0px; height: 0px;">
 		<div class="temp">
 		<p>0&deg;C</p>
 	</div>
 	</div>
 
-	<?php
+<?php
 
 	require("include/mysqlcon.php");
 
-	//Button---------------------------
+	$result = mysqli_query($con,"SELECT * FROM control ORDER BY pos");
 
-  						echo "<form action='$_SERVER[PHP_SELF]' method=POST >";						
-							echo "<table>";							
-  							$query = "SELECT * FROM control ORDER BY pos";
-   							$result = mysqli_query($con,$query);
+	while ($row = mysqli_fetch_object($result))
+    {
+		echo "<div class=box>";
+		echo "<h2>$row->room</h2>";
+		echo "<h3>Schalterart</h3>";
+		echo "<form action='$_SERVER[PHP_SELF]' method=POST >";
+		echo "<table>";	
+		echo "<tr>";
+		echo "<td>$row->name</td>";
+			if ($row->status ==1)
+			{	
+				echo "<td><Button class=an onclick=updatebutton('$row->cid','$row->status','$row->code') >an</Button></td>";
+			}
+ 			else
+ 			{
+ 				echo "<td><Button onclick=updatebutton('$row->cid','$row->status','$row->code') >aus</Button></td>";
+ 			}
+ 		echo "</tr>";							
+		echo "</table>";
+		echo "</form>";
+		echo "</div>";
+	}
+   												
+	mysqli_free_result($result);
+	mysqli_close($con);
 
-   							while ($row = mysqli_fetch_object($result))
-   							{
-   							echo "<tr>";
-								echo "<td>$row->name</td>";
-								if ($row->status ==1)
-								{	
-									echo "<td><Button class=an onclick=updatebutton('$row->cid','$row->status','$row->code') >an</Button></td>";
-								}
- 								else
- 								{
- 									echo "<td><Button onclick=updatebutton('$row->cid','$row->status','$row->code') >aus</Button></td>";
- 								}
- 								echo "</tr>";
- 								
-   							}							
-							echo "</table>";
-							echo "</form>";
-							
-
-							
-		
-							mysqli_free_result($result);
-							mysqli_close($con);
-
-	?>
+?>
 
 <a href="csettings.php">Settings</a>
-</div>
 
 
 
