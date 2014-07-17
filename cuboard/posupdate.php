@@ -1,14 +1,3 @@
-<html>
-<head>
-<style type="text/css">
-#posupdate {
-      text-align: center; 
-      color: white;
-      background: #1ABC9C;
-      font-size: 14pt;
-    }
-</style>
-</head>
 <?php
 
 require("include/mysqlcon.php");
@@ -24,9 +13,11 @@ if($action == "updateCustomerPos")
  $result = $con->query("UPDATE control SET pos = " . $counter . " WHERE cid = " . $recordIDValue);
  $counter++; 
  }
- echo '<div id=posupdate>Position gespeichert</div>';
+ echo 'Position gespeichert';
+ echo '<pre>';
+ print_r($updRecArray);
+ echo '</pre>';
 }
  
 $con->Close();
 ?>
-</html>

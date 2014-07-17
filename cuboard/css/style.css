@@ -186,20 +186,10 @@
     #customersList { 
       list-style-type: none;
       cursor: pointer;
-      margin: 0; 
-      padding: 0; 
     }
-
-    #customersList .customersListHighlight {
-      background: white;
-      border: 1px black;
-    }
-
     #settingstable {
       text-align: right;
     }
-
-    
 
 
 
