@@ -7,7 +7,7 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.js"></script>
 <script language="javascript" type="text/javascript">
 
-function deletebutton(id,name){
+function deletebutton(id,kz){
    var xmlhttp;
 		if (window.XMLHttpRequest)
   		{// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -17,18 +17,18 @@ function deletebutton(id,name){
   		{// code for IE6, IE5
   			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
   		}
-      if (confirm(unescape('Soll '+name+' wirklich gel%F6scht werden?'))) 
+      if (confirm(unescape('Soll wirklich gel%F6scht werden?'))) 
         {
   			xmlhttp.onreadystatechange=function()
  			  {
   				if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		    	{			
 	    			var id = document.getElementById('id');
+            var kz = document.getElementById('kz');
     			}
   			}
-
         
-    		xmlhttp.open("POST", "buttondelete.php?id=" + id, false);
+    		xmlhttp.open("POST", "buttondelete.php?id=" + id + "&kz=" + kz, false);
     		xmlhttp.send();
         }
         else
@@ -37,18 +37,48 @@ function deletebutton(id,name){
         }
 		}
 
+function changeroom(id,rid){
+   var xmlhttp;
+    if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+      }
+    else
+      {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      if (confirm(unescape('Soll der Raum ge%E4ndert werden?'))) 
+        {
+        xmlhttp.onreadystatechange=function()
+        {
+          if (xmlhttp.readyState==4 && xmlhttp.status==200)
+          {     
+            var id = document.getElementById('id');
+            var rid = document.getElementById('rid');
+          }
+        }
+
+        xmlhttp.open("POST", "changeroom.php?id=" + id + "&rid=" + rid, false);
+        xmlhttp.send();
+        }
+        else
+        {
+          location.reload();
+        }
+    }
+
 $(document).ready(function()
     {
       function slideout() {
         setTimeout(function() {
           $("#debugMess").slideUp("slow", function () {
       });
-    }, 2000);}
+    }, 2500);}
  
     $("#debugMess").hide();
  
     $(function() {
-        $("#customersList").sortable({ placeholder: "customersListHighlight", opacity: 1, cursor: 'move', update: function() {
+        $("#customersList").sortable({ placeholder: "customersListHighlight", opacity: 0.5, cursor: 'move', update: function() {
           var order = $(this).sortable("serialize") + '&action=updateCustomerPos';
           $.post("posupdate.php", order, function(theResponse) {
             $("#debugMess").html(theResponse);
@@ -88,6 +118,7 @@ include("include/nosession.php");
 	<?php
 
   require("include/mysqlcon.php");
+  $showDebugMessage = true;
 
               if ($_SERVER['REQUEST_METHOD'] != "POST")
               {
@@ -121,21 +152,34 @@ include("include/nosession.php");
                       </td>";
                 echo "</table>";
 
+                
+                if($showDebugMessage) echo "<div id=debugMess></div>";
                 echo "<ul id=customersList>";
 
-                $test = "SELECT * FROM control LEFT JOIN room ON control.rid=room.rid ORDER BY control.pos";
-                $result = mysqli_query($con, $test);
+                mysqli_free_result($resultroom);
+                $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
+                $objectquery = "SELECT * FROM control LEFT JOIN room ON control.rid=room.rid ORDER BY control.pos";
+                $result = mysqli_query($con, $objectquery);
 
                 while ($row = mysqli_fetch_object($result))
                 {
-                echo "<li id=recArray_$row->cid>";
+                $idzw=$row->cid;
+                echo "<li id=recArray_$idzw>";
                 echo "<table id=settingstable>";
                 echo "<colgroup width=110></colgroup>";
                 echo "<tr>";
                 echo "<td style=width:145px;>$row->name</td>";
                 echo "<td style=width:130px;>$row->code</td>";
                 echo "<td style=width:130px;>$row->room</td>";
-                echo "<td><Button class=loeschen onclick=deletebutton('$row->cid','$row->name') >L&ouml;schen</Button></td>";    
+                //echo "<td>";
+                //echo "<select style=width:120px; name='room' onchange=changeroom('$idzw','this.options[this.selectedIndex].value')>"; 
+                //while ($rrow = mysqli_fetch_object($resultroom))
+                //     {                                             
+                //        echo "<option value=$rrow->rid>$rrow->room</option>";                                    
+                //      }  
+                //echo "</select>";                
+                //echo "</td>";  
+                echo "<td><Button class=loeschen onclick=deletebutton('$idzw','0') >L&ouml;schen</Button></td>";    
                 echo "</tr>";        
                 echo "</table>";
                 echo "</li>";                
@@ -147,7 +191,7 @@ include("include/nosession.php");
 							echo "</div>";
 
               mysqli_free_result($resultroom);
-              $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
+              
 
               echo "<div class=box>";
               echo "<form action='$_SERVER[PHP_SELF]' method=POST >"; 
@@ -164,13 +208,14 @@ include("include/nosession.php");
               echo "</td>";
               echo "</table>";
 
+              $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
                 while ($row = mysqli_fetch_object($resultroom))
                 {
                   echo "<table>";
                   echo "<colgroup width=110></colgroup>";
                   echo "<tr>";
                   echo "<td>$row->room</td>";
-                  echo "<td><Button class=loeschen onclick=deletebutton('$row->rid') >L&ouml;schen</Button></td>";    
+                  echo "<td><Button class=loeschen onclick=deletebutton('$row->rid','1') >L&ouml;schen</Button></td>";    
                   echo "</tr>";        
                   echo "</table>";
                 }

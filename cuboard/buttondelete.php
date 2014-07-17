@@ -4,15 +4,15 @@ include("include/nosession.php");
 require("include/mysqlcon.php");
     						
   $id = $_REQUEST['id'];
-  $name = $_REQUEST['name'];
+  $kz = $_REQUEST['kz'];
 
-  if ($name == "") 
+  if ($kz == 0) 
   {
-  	mysqli_query($con,"DELETE FROM room WHERE cid=$id");
+  	mysqli_query($con,"DELETE FROM control WHERE cid=$id");
   }
   else
   {
-  	mysqli_query($con,"DELETE FROM control WHERE cid=$id");
+  	mysqli_query($con,"DELETE FROM room WHERE rid=$id");
   }
   
 
