@@ -67,6 +67,33 @@ function changeroom(id,rid){
         }
     }
 
+function updatebutton(id,value,code,rid){
+   var xmlhttp;
+    if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+      }
+    else
+      {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+        xmlhttp.onreadystatechange=function()
+      {
+          if (xmlhttp.readyState==4 && xmlhttp.status==200)
+          {     
+            var id = document.getElementById('id');
+            var value = document.getElementById('value');
+            var code = document.getElementById('code');
+            var rid = document.getElementById('rid');
+          }
+        }
+        
+        var queryString = "?id=" + id + "&value=" + value + "&code=" + code + "&rid=" + rid;
+        xmlhttp.open("POST", "buttonupdate.php" + queryString, false);
+        xmlhttp.send();
+
+    }
+
 $(document).ready(function()
     {
       function slideout() {
@@ -110,7 +137,7 @@ include("include/nosession.php");
     <ul id="list-nav">
     	<li id="navmusic"><a href="music.php">Music</a></li>
     	<li id="navhome"><a href="home.php">Home</a></li>
-    	<li id="navcontrol"><a href="control.php">Control</a></li>
+    	<li id="navcontrol"><a href="control.php">Back to Control</a></li>
     </ul>
 </div>
 	
@@ -118,16 +145,62 @@ include("include/nosession.php");
 	<?php
 
   require("include/mysqlcon.php");
+
+
+
   $showDebugMessage = true;
 
               if ($_SERVER['REQUEST_METHOD'] != "POST")
               {
 
+//---Control Settings-----------------------------------------
+
+  $settingsquery = mysqli_query($con,"SELECT * FROM settings");
+
+  echo "<div class=box>";
+  echo "<form action='$_SERVER[PHP_SELF]' method=POST >";
+  echo "<div style=position:absolute;><div class=logout><input type=submit name='logout' value='Logout' ></div></div>"; 
+  echo "<h2>Control Settings</h2>";
+  echo "<h3>Einstellungen</h3>";
+
+  while ($row = mysqli_fetch_object($settingsquery))
+  {
+        $funktion=$row->funktion;
+        $apikey=$row->code;
+        if ($apikey == "") 
+        {
+          $apikey="API-Key einf&uuml;gen";
+        }
+        echo "<table>";
+        echo "<tr>";
+        echo "<td style=width:350px;>$funktion</td>";
+        if ($funktion="Push-Benachrichtigung")
+        {
+          echo "<td><input type=text style=width:180px; name='apikey' placeholder='$apikey'></td>";
+        }
+        if ($row->status == 1)
+        { 
+          echo "<td><Button class=an onclick=updatebutton('$row->sid','$funktion','$row->status','1') >an</Button></td>";
+        }
+        else
+        {
+          echo "<td><Button onclick=updatebutton('$row->sid','$funktion','$row->status','1') >aus</Button></td>";
+        }        
+        echo "</tr>";    
+        echo "</table>";
+  }
+  echo "<table>";
+  echo "<tr><input style=width:550px; type=submit name='uptsettings' value='Aktualisieren'></tr>";
+  echo "</table>";
+  echo "</form>";
+  echo "</div>";
+
+//---Objekt/Raum hinzufügen-----------------------------------------
+
               $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
 
               echo "<div class=box>";
               echo "<form action='$_SERVER[PHP_SELF]' method=POST >";
-              echo "<div style=position:absolute;><div class=logout><input type=submit name='logout' value='Logout' ></div></div>";  
   						echo "<h2>Objekt hinzuf&uuml;gen</h2>";
               echo "<h3>Neuer Eintrag</h3>";                                     
               echo "<table>";
@@ -226,6 +299,7 @@ include("include/nosession.php");
               }
               else
               {
+              //-----------------------------------------------
 							if (isset($_POST['objeintragen'])) 
               {
               
@@ -315,6 +389,8 @@ include("include/nosession.php");
                 }
               }
 
+              //-----------------------------------------------
+
               elseif (isset($_POST['roomeintragen'])) 
               {
                 $newroom=$_POST["newroom"];
@@ -372,6 +448,43 @@ include("include/nosession.php");
                     } 
                 }
               } 
+
+              //-----------------------------------------------
+
+              elseif (isset($_POST['uptsettings'])) 
+              {
+                $apikey=$_POST["apikey"];                 
+                 
+                $eintrag = "UPDATE settings SET code='$apikey' WHERE sid=1"; 
+                $eintragen = mysqli_query($con, $eintrag);
+
+                if($eintragen == true) 
+                    { 
+                        echo "<div id=navigationbar>";
+                        echo "<ul id=list-nav>";
+                        echo "<li id=navlogin><a>CuBoard</a></li>";
+                        echo "</ul>";
+                        echo "</div>";
+                        echo "<div class=box align=center>";
+                        echo "Einstellungen wurden aktualisiert. <br><a href=\"csettings.php\">Zur&uuml;ck</a>"; 
+                        echo "</div>";
+                                                  
+                    }
+                else 
+                    { 
+                        echo "<div id=navigationbar>";
+                        echo "<ul id=list-nav>";
+                        echo "<li id=navlogin><a>CuBoard</a></li>";
+                        echo "</ul>";
+                        echo "</div>";
+                        echo "<div class=box align=center>";
+                        echo "Fehler bei Aktualisierung der Einstellungen. <br><a href=\"csettings.php\">Zur&uuml;ck</a>";  
+                        echo "</div>";
+                                                
+                    } 
+              }
+
+              //-----------------------------------------------
 
               elseif (isset($_POST['logout']))
               {

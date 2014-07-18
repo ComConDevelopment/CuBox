@@ -5,7 +5,7 @@
 <link href="css/style.css" rel="stylesheet">
 <script language="javascript" type="text/javascript">
 
-function updatebutton(id,value,code){
+function updatebutton(id,value,code,rid){
    var xmlhttp;
 		if (window.XMLHttpRequest)
   		{// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -22,10 +22,11 @@ function updatebutton(id,value,code){
 	    			var id = document.getElementById('id');
     				var value = document.getElementById('value');
             		var code = document.getElementById('code');
+            		var rid = document.getElementById('rid');
     			}
   			}
     		
-    		var queryString = "?id=" + id + "&value=" + value + "&code=" + code;
+    		var queryString = "?id=" + id + "&value=" + value + "&code=" + code + "&rid=" + rid;
     		xmlhttp.open("POST", "buttonupdate.php" + queryString, false);
     		xmlhttp.send();
 
@@ -65,7 +66,6 @@ include("include/nosession.php");
 <?php
 
 	require("include/mysqlcon.php");
-
 	
 	$resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY rid");
 
@@ -81,17 +81,16 @@ include("include/nosession.php");
         {
             if ($row->rid==$rid)
             {
-
             	echo "<table>";
             	echo "<tr>";
 				echo "<td>$row->name</td>";
 				if ($row->status ==1)
 				{	
-					echo "<td><Button class=an onclick=updatebutton('$row->cid','$row->status','$row->code') >an</Button></td>";
+					echo "<td><Button class=an onclick=updatebutton('$row->cid','$row->status','$row->code','$rid') >an</Button></td>";
 				}
  				else
  				{
- 					echo "<td><Button onclick=updatebutton('$row->cid','$row->status','$row->code') >aus</Button></td>";
+ 					echo "<td><Button onclick=updatebutton('$row->cid','$row->status','$row->code','$rid') >aus</Button></td>";
  				}
  				echo "</tr>";    
  				echo "</table>";
