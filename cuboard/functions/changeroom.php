@@ -1,7 +1,7 @@
 <?php
 
-include("include/nosession.php");
-require("include/mysqlcon.php");
+include("../include/nosession.php");
+require("../include/mysqlcon.php");
     				
 		$id = $_REQUEST['id'];
     	$rid = $_REQUEST['rid'];

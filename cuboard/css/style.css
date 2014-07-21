@@ -124,15 +124,9 @@
     }
 
     .logout {
-      position: relative;
-      left: 500px; 
-      top: -77px;
-      width: 70px;
-      height: 35px;
-      padding: 0px;
-      background: #ff5a00;
-      color: #fff;
-      text-align: center;
+      position: absolute;
+      left: 797px;
+      top: 80px;
     }
 
     .box {

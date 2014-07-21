@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="css/style.css" rel="stylesheet">
+<link href="../css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -37,7 +37,7 @@
                 header("LOCATION: login.php");
             }
 
-            require("include/mysqlcon.php"); 
+            require("../include/mysqlcon.php"); 
 
             $username = $_POST["username"]; 
             $password = $_POST["password"]; 

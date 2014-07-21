@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<link href="css/style.css" rel="stylesheet">
+<link href="../css/style.css" rel="stylesheet">
 <script language="javascript" type="text/javascript">
 
 function ajaxbutton(id,value){
@@ -35,7 +35,7 @@ function ajaxbutton(id,value){
 
 
 <?php
-include("include/nosession.php");
+include("../include/nosession.php");
 ?>
 
 
@@ -59,7 +59,7 @@ include("include/nosession.php");
 
 	<?php
   
-    require("include/mysqlcon.php");
+    require("../include/mysqlcon.php");
 
 	//Button---------------------------
 

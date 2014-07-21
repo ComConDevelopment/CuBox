@@ -11,7 +11,7 @@
 </head>
 <?php
 
-require("include/mysqlcon.php");
+require("../include/mysqlcon.php");
   
 $action = $con->real_escape_string($_POST['action']); 
 $updRecArray = $_POST['recArray'];

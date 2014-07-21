@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<link href="css/style.css" rel="stylesheet">
+<link href="../css/style.css" rel="stylesheet">
 <script language="javascript" type="text/javascript">
 
 function updatebutton(id,value,code,rid){
@@ -27,7 +27,7 @@ function updatebutton(id,value,code,rid){
   			}
     		
     		var queryString = "?id=" + id + "&value=" + value + "&code=" + code + "&rid=" + rid;
-    		xmlhttp.open("POST", "buttonupdate.php" + queryString, false);
+    		xmlhttp.open("POST", "../functions/buttonupdate.php" + queryString, false);
     		xmlhttp.send();
 
 		}
@@ -38,8 +38,8 @@ function updatebutton(id,value,code,rid){
 
 
 <?php
-require("include/checkmobile.php");
-include("include/nosession.php");
+require("../include/checkmobile.php");
+include("../include/nosession.php");
 //include 'include\weather.php';
 
 ?>
@@ -65,7 +65,7 @@ include("include/nosession.php");
 
 <?php
 
-	require("include/mysqlcon.php");
+	require("../include/mysqlcon.php");
 	
 	$resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY rid");
 

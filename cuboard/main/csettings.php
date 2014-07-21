@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<link href="css/style.css" rel="stylesheet">
+<link href="../css/style.css" rel="stylesheet">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.js"></script>
 <script language="javascript" type="text/javascript">
@@ -28,7 +28,7 @@ function deletebutton(id,kz){
     			}
   			}
         
-    		xmlhttp.open("POST", "buttondelete.php?id=" + id + "&kz=" + kz, false);
+    		xmlhttp.open("POST", "../functions/buttondelete.php?id=" + id + "&kz=" + kz, false);
     		xmlhttp.send();
         }
         else
@@ -58,7 +58,7 @@ function changeroom(id,rid){
           }
         }
 
-        xmlhttp.open("POST", "changeroom.php?id=" + id + "&rid=" + rid, false);
+        xmlhttp.open("POST", "../functions/changeroom.php?id=" + id + "&rid=" + rid, false);
         xmlhttp.send();
         }
         else
@@ -89,7 +89,7 @@ function updatebutton(id,value,code,rid){
         }
         
         var queryString = "?id=" + id + "&value=" + value + "&code=" + code + "&rid=" + rid;
-        xmlhttp.open("POST", "buttonupdate.php" + queryString, false);
+        xmlhttp.open("POST", "../functions/buttonupdate.php" + queryString, false);
         xmlhttp.send();
 
     }
@@ -107,7 +107,7 @@ $(document).ready(function()
     $(function() {
         $("#customersList").sortable({ placeholder: "customersListHighlight", opacity: 0.5, cursor: 'move', update: function() {
           var order = $(this).sortable("serialize") + '&action=updateCustomerPos';
-          $.post("posupdate.php", order, function(theResponse) {
+          $.post("../functionsposupdate.php", order, function(theResponse) {
             $("#debugMess").html(theResponse);
             $("#debugMess").slideDown('slow');
             slideout();
@@ -126,7 +126,7 @@ $(document).ready(function()
 
 
 <?php
-include("include/nosession.php");
+include("../include/nosession.php");
 ?>
 
 
@@ -144,7 +144,7 @@ include("include/nosession.php");
 
 	<?php
 
-  require("include/mysqlcon.php");
+  require("../include/mysqlcon.php");
 
 
 
@@ -159,7 +159,7 @@ include("include/nosession.php");
 
   echo "<div class=box>";
   echo "<form action='$_SERVER[PHP_SELF]' method=POST >";
-  echo "<div style=position:absolute;><div class=logout><input type=submit name='logout' value='Logout' ></div></div>"; 
+  echo "<div class=logout><input type=submit name='logout' value='Logout' ></div>"; 
   echo "<h2>Control Settings</h2>";
   echo "<h3>Einstellungen</h3>";
 
@@ -167,24 +167,29 @@ include("include/nosession.php");
   {
         $funktion=$row->funktion;
         $apikey=$row->code;
+        $status=$row->status;
         if ($apikey == "") 
         {
           $apikey="API-Key einf&uuml;gen";
         }
+        else
+        {
+          $apikey="API-Key vorhanden";
+        }
         echo "<table>";
         echo "<tr>";
         echo "<td style=width:350px;>$funktion</td>";
-        if ($funktion="Push-Benachrichtigung")
+        if ($funktion="Push-Benachrichtigungen")
         {
           echo "<td><input type=text style=width:180px; name='apikey' placeholder='$apikey'></td>";
         }
-        if ($row->status == 1)
+        if ($status == 1)
         { 
-          echo "<td><Button class=an onclick=updatebutton('$row->sid','$funktion','$row->status','1') >an</Button></td>";
+          echo "<td><Button class=an onclick=updatebutton('$row->sid','$status','$funktion','0') >an</Button></td>";
         }
         else
         {
-          echo "<td><Button onclick=updatebutton('$row->sid','$funktion','$row->status','1') >aus</Button></td>";
+          echo "<td><Button onclick=updatebutton('$row->sid','$status','$funktion','0') >aus</Button></td>";
         }        
         echo "</tr>";    
         echo "</table>";
@@ -230,7 +235,7 @@ include("include/nosession.php");
                 echo "<ul id=customersList>";
 
                 mysqli_free_result($resultroom);
-                $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
+                //$resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
                 $objectquery = "SELECT * FROM control LEFT JOIN room ON control.rid=room.rid ORDER BY control.pos";
                 $result = mysqli_query($con, $objectquery);
 
@@ -263,13 +268,13 @@ include("include/nosession.php");
               echo "</form>";
 							echo "</div>";
 
-              mysqli_free_result($resultroom);
+              //mysqli_free_result($resultroom);
               
 
               echo "<div class=box>";
               echo "<form action='$_SERVER[PHP_SELF]' method=POST >"; 
               echo "<h2>Raum hinzuf&uuml;gen</h2>";
-              echo "<h3>Neuer Eintrag</h3>";                               
+              echo "<h3>Neuer Eintrag</h3>"; 
               echo "<table>";
               echo "<colgroup width=110></colgroup>";
               echo "<tr>";   
@@ -281,17 +286,25 @@ include("include/nosession.php");
               echo "</td>";
               echo "</table>";
 
+              if($showDebugMessage) echo "<div id=debugMess></div>";
+              echo "<ul id=customersList>";  
+
               $resultroom = mysqli_query($con,"SELECT * FROM room ORDER BY pos");
                 while ($row = mysqli_fetch_object($resultroom))
                 {
-                  echo "<table>";
+                  $idzw=$row->rid;
+                  echo "<li id=recArray_$idzw>";
+                  echo "<table id=settingstable>";
                   echo "<colgroup width=110></colgroup>";
                   echo "<tr>";
                   echo "<td>$row->room</td>";
-                  echo "<td><Button class=loeschen onclick=deletebutton('$row->rid','1') >L&ouml;schen</Button></td>";    
+                  echo "<td><Button class=loeschen onclick=deletebutton('$idzw','1') >L&ouml;schen</Button></td>";    
                   echo "</tr>";        
                   echo "</table>";
+                  echo "</li>";   
                 }
+
+                echo "</ul>";
 
               echo "</form>";
               echo "</div>";

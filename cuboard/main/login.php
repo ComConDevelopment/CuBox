@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="css/style.css" rel="stylesheet">
+<link href="../css/style.css" rel="stylesheet">
 </head>
 
 <?php
-require("include/checkmlogin.php");
+require("../include/checkmlogin.php");
 ?>
 <body>
     <?php error_reporting(E_ALL ^  E_NOTICE);
@@ -38,7 +38,7 @@ require("include/checkmlogin.php");
 
 			session_start(); 
 
-			require("include/mysqlcon.php");
+			require("../include/mysqlcon.php");
 
 			$username = $_POST["username"]; 
 			$password = md5($_POST["password"]); 

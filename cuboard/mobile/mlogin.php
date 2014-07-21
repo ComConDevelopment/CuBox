@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="css/mstyle.css" rel="stylesheet">
+<link href="../css/mstyle.css" rel="stylesheet">
 </head>
 
 
@@ -33,7 +33,7 @@
 
 			session_start(); 
 
-			require("include/mysqlcon.php");
+			require("../include/mysqlcon.php");
 
 			$username = $_POST["username"]; 
 			$password = md5($_POST["password"]); 
