@@ -107,7 +107,7 @@ $(document).ready(function()
     $(function() {
         $("#customersList").sortable({ placeholder: "customersListHighlight", opacity: 0.5, cursor: 'move', update: function() {
           var order = $(this).sortable("serialize") + '&action=updateCustomerPos';
-          $.post("../functionsposupdate.php", order, function(theResponse) {
+          $.post("../functions/posupdate.php", order, function(theResponse) {
             $("#debugMess").html(theResponse);
             $("#debugMess").slideDown('slow');
             slideout();

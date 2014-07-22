@@ -57,11 +57,6 @@ include("../include/nosession.php");
     </ul>
 </div>
 
-<div style="position: relative; width: 0px; height: 0px;">
-		<div class="temp">
-		<p>0&deg;C</p>
-	</div>
-	</div>
 
 <?php
 

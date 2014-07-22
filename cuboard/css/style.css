@@ -110,23 +110,23 @@
       -webkit-transition:.5s;
       -transition:.5s;
     }
-    button:hover {
-      background: #DCFCF3;
+    button:hover {      
+      background: #C9FFF0;
     }
     button.loeschen:hover {
       background: #FFA4A4;
     }
     button.an {
-      background: #DCFCF3;
+      background: #C9FFF0;
     }
     button.an:hover {
       background: #f0f0f0;
     }
 
     .logout {
-      position: absolute;
-      left: 797px;
-      top: 80px;
+      position: relative;
+      top: -20px;
+      right: -20px;
     }
 
     .box {
@@ -139,7 +139,6 @@
       margin-top: 80px;
       margin-left: auto;
       margin-right: auto;
-      -webkit-transition: all linear 0.5s;
     }
 
     .box table tr td {
@@ -175,11 +174,11 @@
     }
 
     .temp {
-      position: absolute; 
-      left: 485px; 
-      top: -77px;
-      width: 85px;
+      position: relative;
+      top: 15px;
+      left: 490px;
       height: 35px;
+      width: 80px;
       padding: 0px;
       background: #ff5a00;
       color: #fff;
@@ -187,7 +186,9 @@
     }
 
     .temp p {
-      margin-top: 10%;
+      margin-top: -35px;
+      padding-top: 5px;
+      font-family: "Century Gothic";
       text-shadow: 1px 1px 1px #b74d13;
       font-size: 12pt;
     }
@@ -208,6 +209,22 @@
       text-align: right;
     }
 
+    #homeview {
+      display: block;
+      width: 65px;
+      padding: 10px;
+      color: #999;
+      text-decoration: none;
+      background: #f0f0f0;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 10pt;
+      border-width: 0;
+      float: right;
+    }
+    #homeview.an {
+      background: #C9FFF0;
+    }
     
 
 
